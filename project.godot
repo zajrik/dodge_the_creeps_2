@@ -6,14 +6,19 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=5
+config_version=4
+
+_global_script_classes=[  ]
+_global_script_class_icons={
+
+}
 
 [application]
 
-config/name="dodge_the_creeps_2"
-config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+config/name="Squash the Creeps (3D)"
+config/icon="res://icon.png"
 
-[dotnet]
+[rendering]
 
-project/assembly_name="dodge_the_creeps_2"
+quality/driver/driver_name="GLES2"
+quality/filters/msaa=3
