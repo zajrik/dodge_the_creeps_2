@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://cshp88csqtplv"]
+[gd_scene load_steps=15 format=3 uid="uid://cshp88csqtplv"]
 
 [ext_resource type="PackedScene" uid="uid://clf104ugdt8k2" path="res://player.tscn" id="1_2c4kc"]
 [ext_resource type="Script" path="res://main.gd" id="1_bdjtt"]
 [ext_resource type="PackedScene" uid="uid://cl0r4j1d3e3qe" path="res://mob.tscn" id="3_78fhr"]
 [ext_resource type="FontFile" uid="uid://bj5ccxxg7dut5" path="res://fonts/Montserrat-Medium.ttf" id="4_xxs5k"]
+[ext_resource type="Script" path="res://ui.gd" id="5_wfkf8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_snqup"]
 size = Vector3(60, 2, 60)
@@ -123,19 +124,23 @@ far = 400.0
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 720.0
-offset_bottom = 540.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = SubResource("Theme_lpo2j")
+script = ExtResource("5_wfkf8")
 
 [node name="DebugLabel" type="Label" parent="UI"]
+z_index = 1
 layout_mode = 1
 offset_right = 262.0
 offset_bottom = 193.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Mobs: n/a"
 
 [node name="ScoreLabel" type="Label" parent="UI"]
+z_index = 1
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -144,8 +149,31 @@ offset_left = -44.0
 offset_right = 44.0
 offset_bottom = 28.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Score: 0"
+
+[node name="Retry" type="ColorRect" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.52549)
+
+[node name="Label" type="Label" parent="UI/Retry"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -114.5
+offset_top = -14.0
+offset_right = 114.5
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Press ENTER to retry"
 
 [node name="SpawnTimer" type="Timer" parent="."]
 wait_time = 0.5

@@ -26,10 +26,12 @@ func initialize(start_pos: Vector3, player_pos: Vector3) -> void:
   # Randomize look rotation within +/-45 degrees towards target
   rotate_y(randf_range(-PI / 4, PI / 4))
 
-
   # Set velocity vector to the direction the mob is looking
   var speed: float = randi_range(min_speed, max_speed)
   velocity = (Vector3.FORWARD * speed).rotated(Vector3.UP, rotation.y)
+
+  # Set random animation speed scale
+  $AnimationPlayer.speed_scale = speed / min_speed
 
 ## Squash this mob.
 func squash() -> void:
