@@ -18,9 +18,15 @@ func _process(_delta: float) -> void:
 
 func show_message(msg: String, duration: int = 2) -> void:
   $Message.set_text(msg)
+  $Message.show()
+
   $Message/Timer.set_wait_time(duration)
   $Message/Timer.start()
 
   await $Message/Timer.timeout
 
   $Message.hide()
+
+func set_message(msg: String) -> void:
+  $Message.set_text(msg)
+  $Message.show()

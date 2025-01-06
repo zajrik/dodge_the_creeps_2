@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://clf104ugdt8k2"]
+[gd_scene load_steps=8 format=3 uid="uid://clf104ugdt8k2"]
 
 [ext_resource type="PackedScene" uid="uid://b1dn45nweftc3" path="res://art/player.glb" id="1_8juce"]
 [ext_resource type="Script" path="res://scenes/player/player.gd" id="1_m6jdk"]
-[ext_resource type="PackedScene" uid="uid://cl0r4j1d3e3qe" path="res://scenes/mob/mob.tscn" id="3_nj211"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ow384"]
 radius = 0.7
@@ -100,12 +99,6 @@ libraries = {
 "": SubResource("AnimationLibrary_ouh1o")
 }
 autoplay = "float"
-
-[node name="Mob" parent="." instance=ExtResource("3_nj211")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.2, -2.1)
-visible = false
-collision_layer = 0
-collision_mask = 4
 
 [node name="DeathTimer" type="Timer" parent="."]
 wait_time = 0.05

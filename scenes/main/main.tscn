@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cshp88csqtplv"]
+[gd_scene load_steps=17 format=3 uid="uid://cshp88csqtplv"]
 
 [ext_resource type="PackedScene" uid="uid://clf104ugdt8k2" path="res://scenes/player/player.tscn" id="1_2c4kc"]
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_bdjtt"]
@@ -22,7 +22,7 @@ albedo_color = Color(0.220257, 0.867499, 0.695841, 1)
 
 [sub_resource type="Curve3D" id="Curve3D_17vdu"]
 _data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -12.5, 0, -11.365, 0, 0, 0, 0, 0, 0, 12.5, 0, -11.365, 0, 0, 0, 0, 0, 0, 12.5, 0, 11.635, 0, 0, 0, 0, 0, 0, -12.5, 0, 11.635, 0, 0, 0, 0, 0, 0, -12.5, 0, -11.365),
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -13.5, 0, -12.5, 0, 0, 0, 0, 0, 0, 13.5, 0, -12.5, 0, 0, 0, 0, 0, 0, 13.5, 0, 12.5, 0, 0, 0, 0, 0, 0, -13.5, 0, 12.5, 0, 0, 0, 0, 0, 0, -13.5, 0, -12.5),
 "tilts": PackedFloat32Array(0, 0, 0, 0, 0)
 }
 point_count = 5
@@ -32,6 +32,12 @@ inner_radius = 1.851
 outer_radius = 1.789
 
 [sub_resource type="ORMMaterial3D" id="ORMMaterial3D_feal5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0oo0b"]
+size = Vector3(10, 2, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nelwy"]
+size = Vector3(1, 7, 10)
 
 [sub_resource type="Theme" id="Theme_lpo2j"]
 default_font = ExtResource("4_xxs5k")
@@ -46,6 +52,7 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 30, 25
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_2c4kc")]
+visible = false
 
 [node name="Arena" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
@@ -58,6 +65,9 @@ shape = SubResource("BoxShape3D_snqup")
 
 [node name="FloorMesh" type="MeshInstance3D" parent="Arena"]
 mesh = SubResource("BoxMesh_s2tor")
+
+[node name="PlayerSpawnMarker" type="Marker3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.83488, 0)
 
 [node name="WallNorthCollider" type="CollisionShape3D" parent="Arena"]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 6, -29.5)
@@ -76,44 +86,74 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.5, 6, 0)
 shape = SubResource("BoxShape3D_lro6b")
 
 [node name="Cylinders" type="Node3D" parent="Arena"]
-visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Arena/Cylinders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 2, -11.365)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 2, -12.5)
 mesh = SubResource("CylinderMesh_n61ki")
 surface_material_override/0 = SubResource("StandardMaterial3D_4maxt")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Arena/Cylinders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 2, -11.365)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 2, -12.5)
 mesh = SubResource("CylinderMesh_n61ki")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_4maxt")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Arena/Cylinders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 2, 11.635)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.5, 2, 12.5)
 mesh = SubResource("CylinderMesh_n61ki")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_4maxt")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Arena/Cylinders"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 2, 11.635)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.5, 2, 12.5)
 mesh = SubResource("CylinderMesh_n61ki")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_4maxt")
 
-[node name="SpawnPath" type="Path3D" parent="."]
+[node name="SpawnPath" type="Path3D" parent="Arena"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 curve = SubResource("Curve3D_17vdu")
 
-[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -12.5, 0, -11.365)
+[node name="SpawnLocation" type="PathFollow3D" parent="Arena/SpawnPath"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -13.5, 0, -12.5)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SpawnPath/SpawnLocation"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Arena/SpawnPath/SpawnLocation"]
 transform = Transform3D(1.5, 0, 7.10543e-15, 0, 1, 0, 0, 0, 1.5, 0, -0.969, 0)
 mesh = SubResource("TorusMesh_6yftp")
 surface_material_override/0 = SubResource("ORMMaterial3D_feal5")
 
+[node name="Jail" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -7, 0)
+collision_layer = 4
+collision_mask = 0
+metadata/_edit_group_ = true
+
+[node name="JailFloorCollider" type="CollisionShape3D" parent="Jail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+shape = SubResource("BoxShape3D_0oo0b")
+
+[node name="JailWallNorthCollider" type="CollisionShape3D" parent="Jail"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.5, -5.5)
+shape = SubResource("BoxShape3D_nelwy")
+
+[node name="JailWallEastCollider" type="CollisionShape3D" parent="Jail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1.5, 0)
+shape = SubResource("BoxShape3D_nelwy")
+
+[node name="JailWallSouthCollider" type="CollisionShape3D" parent="Jail"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 1.5, 5.5)
+shape = SubResource("BoxShape3D_nelwy")
+
+[node name="JailWallWestCollider" type="CollisionShape3D" parent="Jail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 1.47646, 0)
+shape = SubResource("BoxShape3D_nelwy")
+
+[node name="PlayerJailMarker" type="Marker3D" parent="Jail"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
 [node name="CameraPivot" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.559193, 0.829038, 0, -0.829038, 0.559193, 0, 0, 0)
+visible = false
 metadata/_edit_group_ = true
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]

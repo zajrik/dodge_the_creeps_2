@@ -69,10 +69,13 @@ func _physics_process(delta: float) -> void:
   $Character.rotation.x = PI / 6 * velocity.y / jump_impulse
 
 func _on_mob_detector_body_entered(_body: Node3D) -> void:
-  $DeathTimer.start()
+  #$DeathTimer.start()
+  hit.emit()
 
 func _on_mob_detector_body_exited(_body: Node3D) -> void:
-  $DeathTimer.stop()
+  #$DeathTimer.stop()
+  pass
 
 func _on_death_timer_timeout() -> void:
-  hit.emit()
+  #hit.emit()
+  pass
