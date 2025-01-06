@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://mob.gd" id="1_vec4k"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qaoqi"]
-size = Vector3(2, 1.2, 2.7)
+size = Vector3(1.6, 1, 1.5)
 
 [sub_resource type="Animation" id="Animation_l8bx0"]
 resource_name = "float"
@@ -70,6 +70,7 @@ _data = {
 }
 
 [node name="Mob" type="CharacterBody3D" groups=["mobs"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_vec4k")
@@ -81,7 +82,7 @@ max_speed = 13
 [node name="Model" parent="Character" instance=ExtResource("1_hs117")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.340942, 0.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96046e-08, 0.240942, 0.05)
 shape = SubResource("BoxShape3D_qaoqi")
 
 [node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="."]

@@ -68,6 +68,12 @@ func _physics_process(delta: float) -> void:
   # Adjust character angle over jump arc
   $Character.rotation.x = PI / 6 * velocity.y / jump_impulse
 
-func _on_mob_detector_body_entered(body: Node3D) -> void:
+func _on_mob_detector_body_entered(_body: Node3D) -> void:
+  $DeathTimer.start()
+
+func _on_mob_detector_body_exited(_body: Node3D) -> void:
+  $DeathTimer.stop()
+
+func _on_death_timer_timeout() -> void:
   hit.emit()
   queue_free()
