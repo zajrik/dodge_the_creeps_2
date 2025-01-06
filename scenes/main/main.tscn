@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://cshp88csqtplv"]
 
-[ext_resource type="PackedScene" uid="uid://clf104ugdt8k2" path="res://player.tscn" id="1_2c4kc"]
-[ext_resource type="Script" path="res://main.gd" id="1_bdjtt"]
-[ext_resource type="PackedScene" uid="uid://cl0r4j1d3e3qe" path="res://mob.tscn" id="3_78fhr"]
+[ext_resource type="PackedScene" uid="uid://clf104ugdt8k2" path="res://scenes/player/player.tscn" id="1_2c4kc"]
+[ext_resource type="Script" path="res://scenes/main/main.gd" id="1_bdjtt"]
+[ext_resource type="PackedScene" uid="uid://cl0r4j1d3e3qe" path="res://scenes/mob/mob.tscn" id="2_r24qb"]
 [ext_resource type="FontFile" uid="uid://bj5ccxxg7dut5" path="res://fonts/Montserrat-Medium.ttf" id="4_xxs5k"]
-[ext_resource type="Script" path="res://ui.gd" id="5_wfkf8"]
+[ext_resource type="Script" path="res://scripts/ui.gd" id="5_wfkf8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_snqup"]
 size = Vector3(60, 2, 60)
@@ -39,7 +39,7 @@ default_font_size = 22
 
 [node name="Main" type="Node"]
 script = ExtResource("1_bdjtt")
-mob_scene = ExtResource("3_78fhr")
+mob_scene = ExtResource("2_r24qb")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 30, 25, 30)
@@ -151,6 +151,23 @@ offset_bottom = 28.0
 grow_horizontal = 2
 text = "Score: 0"
 
+[node name="Message" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -85.0
+offset_bottom = 85.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "aaaaaaaaa"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Timer" type="Timer" parent="UI/Message"]
+one_shot = true
+
 [node name="Retry" type="ColorRect" parent="UI"]
 layout_mode = 1
 anchors_preset = 15
@@ -160,7 +177,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.52549)
 
-[node name="Label" type="Label" parent="UI/Retry"]
+[node name="RetryLabel" type="Label" parent="UI/Retry"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

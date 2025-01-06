@@ -76,4 +76,3 @@ func _on_mob_detector_body_exited(_body: Node3D) -> void:
 
 func _on_death_timer_timeout() -> void:
   hit.emit()
-  queue_free()

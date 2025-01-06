@@ -39,6 +39,17 @@ func squash() -> void:
   queue_free()
 
 func _physics_process(_delta: float) -> void:
+  # Iterate collisions to handle bouncing when collision is turned on
+  for index in range(get_slide_collision_count()):
+    var collision: KinematicCollision3D = get_slide_collision(index)
+
+    # Bounce on first non-terrain collision
+    if collision.get_collider() != null:
+      velocity = velocity.bounce(collision.get_normal())
+      break
+
+  # Force mob to look in the direction of its movement
+  $Character.look_at(position + velocity.normalized())
   move_and_slide()
 
 func _on_visible_on_screen_notifier_3d_screen_exited() -> void:
