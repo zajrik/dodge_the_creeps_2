@@ -5,28 +5,44 @@ const WHITE := Color(1.0, 1.0, 1.0, 1.0)
 
 func _ready() -> void:
   $Message.hide()
+  $ScoreLabel.set('theme_override_colors/font_color', BLACK)
+  $DebugLabel.set('theme_override_colors/font_color', BLACK)
+  $Message.set('theme_override_colors/font_color', BLACK)
+  $Message.set('theme_override_colors/font_outline_color', WHITE)
 
-func _process(_delta: float) -> void:
-  if not $Retry.visible:
-    $Message.set('theme_override_colors/font_color', BLACK)
-    $ScoreLabel.set('theme_override_colors/font_color', BLACK)
-    $DebugLabel.set('theme_override_colors/font_color', BLACK)
-  else:
-    $Message.set('theme_override_colors/font_color', WHITE)
-    $ScoreLabel.set('theme_override_colors/font_color', WHITE)
-    $DebugLabel.set('theme_override_colors/font_color', WHITE)
 
-func show_message(msg: String, duration: int = 2) -> void:
-  $Message.set_text(msg)
-  $Message.show()
+## Show the retry screen.
+func show_retry() -> void:
+  $ScoreLabel.set('theme_override_colors/font_color', WHITE)
+  $DebugLabel.set('theme_override_colors/font_color', WHITE)
+  $Message.set('theme_override_colors/font_color', WHITE)
+  $Message.set('theme_override_colors/font_outline_color', BLACK)
+  $Retry.show()
+  show_message('Press ENTER to retry', 32)
 
-  $Message/Timer.set_wait_time(duration)
-  $Message/Timer.start()
 
-  await $Message/Timer.timeout
+## Hide the retry screen.
+func hide_retry() -> void:
+  $ScoreLabel.set('theme_override_colors/font_color', BLACK)
+  $DebugLabel.set('theme_override_colors/font_color', BLACK)
+  $Message.set('theme_override_colors/font_color', BLACK)
+  $Message.set('theme_override_colors/font_outline_color', WHITE)
 
+  $Retry.hide()
   $Message.hide()
+  $Message.set_text('')
 
-func set_message(msg: String) -> void:
+
+## Show the given message for a specified duration.
+##
+## If duration is not set then the message must be manually hidden
+## when no longer needed.
+func show_message(msg: String, size: int = 64, duration: int = -1) -> void:
   $Message.set_text(msg)
+  $Message.set('theme_override_font_sizes/font_size', size)
   $Message.show()
+
+  if duration > 0:
+    $Message/Timer.start(duration)
+    await $Message/Timer.timeout
+    $Message.hide()

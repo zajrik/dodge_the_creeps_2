@@ -33,10 +33,12 @@ func initialize(start_pos: Vector3, player_pos: Vector3) -> void:
   # Set random animation speed scale
   $AnimationPlayer.speed_scale = speed / min_speed
 
+
 ## Squash this mob.
 func squash() -> void:
   squashed.emit()
   queue_free()
+
 
 func _physics_process(_delta: float) -> void:
   # Iterate collisions to handle bouncing when collision is turned on
@@ -51,6 +53,7 @@ func _physics_process(_delta: float) -> void:
   # Force mob to look in the direction of its movement
   $Character.look_at(position + velocity.normalized())
   move_and_slide()
+
 
 func _on_visible_on_screen_notifier_3d_screen_exited() -> void:
   # Free self when no longer visible on screen

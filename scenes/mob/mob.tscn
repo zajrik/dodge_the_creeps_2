@@ -72,7 +72,7 @@ _data = {
 [node name="Mob" type="CharacterBody3D" groups=["mobs"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
 collision_layer = 2
-collision_mask = 5
+axis_lock_linear_y = true
 motion_mode = 1
 script = ExtResource("1_vec4k")
 min_speed = 5

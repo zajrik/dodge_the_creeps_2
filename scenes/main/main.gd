@@ -3,32 +3,50 @@ extends Node
 @export var mob_scene: PackedScene
 
 var score: int = 0
+var multiplier: int = 0
 
 # Start in demo mode, allowing mobs to collide for my amusement
 var demo: bool = true
 
 func _ready() -> void:
   $UI/Retry.hide()
+  $Player.set_position($Jail/PlayerJailMarker.global_position)
 
   # Randomize starting spawn location
   $Arena/SpawnPath/SpawnLocation.progress_ratio = randf()
-  new_game()
+
+  $SpawnTimer.start()
+  $UI.show_message('Squash the Creeps!')
+
 
 func _process(_delta) -> void:
   var mob_count: int = get_tree().get_nodes_in_group('mobs').size()
 
   var debug_text: String = ''
   debug_text += 'Mobs: %s\n' % mob_count
+  debug_text += 'Pos: %s\n' % $Player.position
+  debug_text += 'Spawn: %s\n' % $Arena/SpawnPath/SpawnLocation.global_position
 
   $UI/DebugLabel.set_text(debug_text)
   $UI/ScoreLabel.set_text('Score: %s' % str(score))
 
-  if Input.is_action_just_pressed('debug_clear'):
-    get_tree().call_group('mobs', 'queue_free')
+  # Append multipler text to score label
+  if (multiplier > 1):
+    $UI/ScoreLabel.text += ' (x%s)'  % multiplier
+
+
+  # Reset multiplier if player falls to the ground
+  if $Player.global_position.y < 0.6:
+    multiplier = 0
+
 
 func _unhandled_input(event: InputEvent) -> void:
-  if event.is_action_pressed('ui_accept') and $UI/Retry.visible:
+  if event.is_action_pressed('ui_accept') and demo:
     new_game()
+
+  if event.is_action_pressed('debug_clear'):
+    get_tree().call_group('mobs', 'queue_free')
+
 
 ## Prepare and spawn a mob on SpawnTimer tick.
 func _on_spawn_timer_timeout() -> void:
@@ -36,8 +54,8 @@ func _on_spawn_timer_timeout() -> void:
   spawn_location.progress_ratio = randf()
 
   var mob: Mob = mob_scene.instantiate()
-  mob.initialize(spawn_location.position, $Player.position)
-  mob.squashed.connect(increase_score)
+  mob.initialize(spawn_location.global_position, $Player.position)
+  mob.squashed.connect(_on_squash)
 
   # Enable inter-mob collision in demo mode
   if demo:
@@ -45,16 +63,19 @@ func _on_spawn_timer_timeout() -> void:
 
   add_child(mob)
 
+
 ## Show retry screen and stop spawn timer on Player hit.
 func _on_player_hit() -> void:
   game_over()
+
 
 ## Start a new game.
 func new_game() -> void:
   score = 0
   demo = false
+  $SpawnTimer.stop()
   get_tree().call_group('mobs', 'queue_free')
-  $UI/Retry.hide()
+  $UI.hide_retry()
 
   # Move player to spawn and unhide
   $Player.show()
@@ -63,8 +84,19 @@ func new_game() -> void:
   # Disable inter-mob collision during gameplay
   get_tree().call_group('mobs', 'set_collision_mask_value', 2, false)
 
+  $UI.show_message('Get ready!', 64, 2)
+
+  $StartTimer.start()
+  await $StartTimer.timeout
+
+  $SpawnTimer.start()
+  $ScoreTimer.start()
+
+
 ## End the current game, displaying the retry screen.
 func game_over() -> void:
+  $ScoreTimer.stop()
+
   # Hide player and move out of arena so mobs don't bounce off the invisible player
   $Player.hide()
   $Player.set_position($Jail/PlayerJailMarker.global_position)
@@ -82,8 +114,24 @@ func game_over() -> void:
   demo = true
   get_tree().call_group('mobs', 'set_collision_mask_value', 2, true)
 
-  $UI/Retry.show()
+  $UI.show_retry()
 
-## Increment the score by 1.
-func increase_score() -> void:
-  score += 1
+
+## Increment the score by 1 * the given multiplier.
+func increase_score(multiplier: int = 1) -> void:
+  score += 1 * multiplier
+
+  if multiplier > 1:
+    print('Score increased by %s' % str(1 * multiplier))
+
+
+## Increment score by 1 on ScoreTimer tick
+func _on_score_timer_timeout() -> void:
+  increase_score()
+
+
+## Handle mob squash, incrementing multiplier and increasing score
+func _on_squash() -> void:
+  multiplier += 1
+  increase_score(multiplier)
+  pass
