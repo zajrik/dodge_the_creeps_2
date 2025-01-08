@@ -2,21 +2,37 @@ extends Node
 
 @export var mob_scene: PackedScene
 
+# Node path reference convenience vars
+@onready var player: Player = $Player
+
+@onready var player_spawn: Marker3D = $Arena/PlayerSpawnMarker
+@onready var mob_spawn: PathFollow3D = $Arena/SpawnPath/SpawnLocation
+@onready var jail: Marker3D = $Jail/PlayerJailMarker
+
+@onready var ui: UI = $UI
+@onready var score_label: Label = $UI/ScoreLabel
+@onready var debug_label: Label = $UI/DebugLabel
+@onready var retry_screen: ColorRect = $UI/Retry
+
+@onready var start_timer: Timer = $StartTimer
+@onready var spawn_timer: Timer = $SpawnTimer
+@onready var score_timer: Timer = $ScoreTimer
+
 var score: int = 0
 var combo: int = 0
 
 # Start in demo mode, allowing mobs to collide for my amusement
 var demo: bool = true
 
+
 func _ready() -> void:
-  $UI/Retry.hide()
-  $Player.set_position($Jail/PlayerJailMarker.global_position)
+  player.set_position(jail.global_position)
 
-  # Randomize starting spawn location
-  $Arena/SpawnPath/SpawnLocation.progress_ratio = randf()
+  # Randomize starting player_spawn location
+  mob_spawn.progress_ratio = randf()
 
-  $SpawnTimer.start()
-  $UI.show_message('Squash the Creeps!')
+  spawn_timer.start()
+  ui.show_message('Squash the Creeps!')
 
 
 func _process(_delta) -> void:
@@ -24,18 +40,18 @@ func _process(_delta) -> void:
 
   var debug_text: String = ''
   debug_text += 'Mobs: %s\n' % mob_count
-  debug_text += 'Pos: %s\n' % $Player.position
-  debug_text += 'Spawn: %s\n' % $Arena/SpawnPath/SpawnLocation.global_position
+  debug_text += 'Pos: %s\n' % player.position
+  debug_text += 'Spawn: %s\n' % mob_spawn.global_position
 
-  $UI/DebugLabel.set_text(debug_text)
-  $UI/ScoreLabel.set_text('Score: %s' % str(score))
+  debug_label.set_text(debug_text)
+  score_label.set_text('Score: %s' % str(score))
 
   # Append multipler text to score label
   if (combo > 1):
-    $UI/ScoreLabel.text += ' (x%s)' % combo
+    score_label.text += ' (x%s)' % combo
 
   # Reset combo if player falls to the ground
-  if $Player.global_position.y < 0.6:
+  if player.global_position.y < 0.6:
     combo = 0
 
 
@@ -47,13 +63,12 @@ func _unhandled_input(event: InputEvent) -> void:
     get_tree().call_group('mobs', 'queue_free')
 
 
-## Prepare and spawn a mob on SpawnTimer tick.
+## Prepare and player_spawn a mob on SpawnTimer tick.
 func _on_spawn_timer_timeout() -> void:
-  var spawn_location: PathFollow3D = $Arena/SpawnPath/SpawnLocation
-  spawn_location.progress_ratio = randf()
+  mob_spawn.progress_ratio = randf()
 
   var mob: Mob = mob_scene.instantiate()
-  mob.initialize(spawn_location.global_position, $Player.position)
+  mob.initialize(mob_spawn.global_position, player.position)
   mob.squashed.connect(_on_squash)
 
   # Enable inter-mob collision in demo mode
@@ -63,7 +78,7 @@ func _on_spawn_timer_timeout() -> void:
   add_child(mob)
 
 
-## Show retry screen and stop spawn timer on Player hit.
+## Show retry screen and stop player_spawn timer on Player hit.
 func _on_player_hit() -> void:
   game_over()
 
@@ -72,33 +87,33 @@ func _on_player_hit() -> void:
 func new_game() -> void:
   score = 0
   demo = false
-  $SpawnTimer.stop()
+  spawn_timer.stop()
   get_tree().call_group('mobs', 'queue_free')
-  $UI.hide_retry()
+  ui.hide_retry()
 
-  # Move player to spawn and unhide
-  $Player.show()
-  $Player.set_position($Arena/PlayerSpawnMarker.global_position)
+  # Move player to player_spawn and unhide
+  player.show()
+  player.set_position(player_spawn.global_position)
 
   # Disable inter-mob collision during gameplay
   get_tree().call_group('mobs', 'set_collision_mask_value', 2, false)
 
-  $UI.show_message('Get ready!', 64, 2)
+  ui.show_message('Get ready!', 64, 2)
 
-  $StartTimer.start()
-  await $StartTimer.timeout
+  start_timer.start()
+  await start_timer.timeout
 
-  $SpawnTimer.start()
-  $ScoreTimer.start()
+  spawn_timer.start()
+  score_timer.start()
 
 
 ## End the current game, displaying the retry screen.
 func game_over() -> void:
-  $ScoreTimer.stop()
+  score_timer.stop()
 
   # Hide player and move out of arena so mobs don't bounce off the invisible player
-  $Player.hide()
-  $Player.set_position($Jail/PlayerJailMarker.global_position)
+  player.hide()
+  player.set_position(jail.global_position)
 
   # I tried disabling the player's mob collision mask but that didn't stop
   # collisions for some reason??? So making a little jail below the arena
@@ -113,15 +128,12 @@ func game_over() -> void:
   demo = true
   get_tree().call_group('mobs', 'set_collision_mask_value', 2, true)
 
-  $UI.show_retry()
+  ui.show_retry()
 
 
 ## Increment the score by 1 * the given combo.
 func increase_score(multiplier: int = 1) -> void:
   score += 1 * multiplier
-
-  if multiplier > 1:
-    print('Score increased by %s' % str(1 * multiplier))
 
 
 ## Increment score by 1 on ScoreTimer tick

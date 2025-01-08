@@ -1,4 +1,4 @@
-extends CharacterBody3D
+class_name Player extends CharacterBody3D
 
 ## Emitted when the player gets hit.
 signal hit
@@ -15,7 +15,12 @@ signal hit
 ## Upward impulse to be added on bounce in meters/sec.
 @export var bounce_impulse: int = 16
 
+# Node path reference convenience vars
+@onready var animation: AnimationPlayer = $AnimationPlayer
+@onready var character: Node3D = $Character
+
 var target_velocity := Vector3.ZERO
+
 
 func _physics_process(delta: float) -> void:
   var direction := Vector3.ZERO
@@ -29,9 +34,10 @@ func _physics_process(delta: float) -> void:
     direction = direction.normalized()
     set_basis(Basis.looking_at(direction))
 
-    $AnimationPlayer.set_speed_scale(4)
+    # Speed up animation scale when moving
+    animation.set_speed_scale(4)
   else:
-    $AnimationPlayer.set_speed_scale(1)
+    animation.set_speed_scale(1)
 
   # Set horizontal target velocity
   target_velocity.x = direction.x * speed
@@ -66,7 +72,7 @@ func _physics_process(delta: float) -> void:
   move_and_slide()
 
   # Adjust character angle over jump arc
-  $Character.rotation.x = PI / 6 * velocity.y / jump_impulse
+  character.rotation.x = PI / 6 * velocity.y / jump_impulse
 
 
 func _on_mob_detector_body_entered(_body: Node3D) -> void:
