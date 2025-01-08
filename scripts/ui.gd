@@ -37,9 +37,9 @@ func hide_retry() -> void:
 ##
 ## If duration is not set then the message must be manually hidden
 ## when no longer needed.
-func show_message(msg: String, size: int = 64, duration: int = -1) -> void:
+func show_message(msg: String, font_size: int = 64, duration: int = -1) -> void:
   $Message.set_text(msg)
-  $Message.set('theme_override_font_sizes/font_size', size)
+  $Message.set('theme_override_font_sizes/font_size', font_size)
   $Message.show()
 
   if duration > 0:

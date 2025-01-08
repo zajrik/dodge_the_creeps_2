@@ -27,11 +27,11 @@ func _physics_process(delta: float) -> void:
   # Normalize direction and LOOK AT IT
   if direction != Vector3.ZERO:
     direction = direction.normalized()
-    $Character.basis = Basis.looking_at(direction)
+    set_basis(Basis.looking_at(direction))
 
-    $AnimationPlayer.speed_scale = 4
+    $AnimationPlayer.set_speed_scale(4)
   else:
-    $AnimationPlayer.speed_scale = 1
+    $AnimationPlayer.set_speed_scale(1)
 
   # Set horizontal target velocity
   target_velocity.x = direction.x * speed
@@ -62,7 +62,7 @@ func _physics_process(delta: float) -> void:
 
       break
 
-  velocity = target_velocity
+  set_velocity(target_velocity)
   move_and_slide()
 
   # Adjust character angle over jump arc
@@ -70,15 +70,4 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_mob_detector_body_entered(_body: Node3D) -> void:
-  #$DeathTimer.start()
   hit.emit()
-
-
-func _on_mob_detector_body_exited(_body: Node3D) -> void:
-  #$DeathTimer.stop()
-  pass
-
-
-func _on_death_timer_timeout() -> void:
-  #hit.emit()
-  pass

@@ -12,6 +12,10 @@ signal squashed
 ## Downward acceleration while airborne in meters/sec squared.
 @export var fall_acceleration: int = 75
 
+## Timestep used for interpolating turn direction
+var timestep: float = 0.0
+
+
 ## Initialize this mob, setting its position and velocity.
 func initialize(start_pos: Vector3, player_pos: Vector3) -> void:
   var target_pos := Vector3(player_pos)
@@ -41,17 +45,23 @@ func squash() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-  # Iterate collisions to handle bouncing when collision is turned on
+  # Iterate collisions to handle bouncing when collision is enabled
   for index in range(get_slide_collision_count()):
     var collision: KinematicCollision3D = get_slide_collision(index)
 
     # Bounce on first non-terrain collision
     if collision.get_collider() != null:
-      velocity = velocity.bounce(collision.get_normal())
-      break
+      set_velocity(velocity.bounce(collision.get_normal()))
+      timestep = 0.0
 
-  # Force mob to look in the direction of its movement
-  $Character.look_at(position + velocity.normalized())
+  # Force mob to look in the direction of its movement but lerp rotation
+  # based on animation speed scale so faster mobs turn faster and vice-versa
+  timestep += _delta * 0.1 * $AnimationPlayer.speed_scale
+  var current_basis := Quaternion(transform.basis)
+  var target_basis := Quaternion(Basis.looking_at(velocity))
+  var new_basis := current_basis.slerp(target_basis, clamp(timestep, 0.0, 1.0))
+  transform.basis = Basis(new_basis)
+
   move_and_slide()
 
 

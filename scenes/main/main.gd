@@ -3,7 +3,7 @@ extends Node
 @export var mob_scene: PackedScene
 
 var score: int = 0
-var multiplier: int = 0
+var combo: int = 0
 
 # Start in demo mode, allowing mobs to collide for my amusement
 var demo: bool = true
@@ -31,13 +31,12 @@ func _process(_delta) -> void:
   $UI/ScoreLabel.set_text('Score: %s' % str(score))
 
   # Append multipler text to score label
-  if (multiplier > 1):
-    $UI/ScoreLabel.text += ' (x%s)'  % multiplier
+  if (combo > 1):
+    $UI/ScoreLabel.text += ' (x%s)' % combo
 
-
-  # Reset multiplier if player falls to the ground
+  # Reset combo if player falls to the ground
   if $Player.global_position.y < 0.6:
-    multiplier = 0
+    combo = 0
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -105,7 +104,7 @@ func game_over() -> void:
   # collisions for some reason??? So making a little jail below the arena
   # and moving the player out of harms way seemed like the easiest solution
 
-  # Udpate: I figured out the mob collision problem. I was setting it for all
+  # Update: I figured out the mob collision problem. I was setting it for all
   # current mobs but forgot to set it on newly spawned mobs which is what I
   # accomplished with "demo" mode in the 2D version. Implemented that here,
   # but I'm keeping the jail because I think it's silly and that makes me happy
@@ -117,7 +116,7 @@ func game_over() -> void:
   $UI.show_retry()
 
 
-## Increment the score by 1 * the given multiplier.
+## Increment the score by 1 * the given combo.
 func increase_score(multiplier: int = 1) -> void:
   score += 1 * multiplier
 
@@ -130,8 +129,7 @@ func _on_score_timer_timeout() -> void:
   increase_score()
 
 
-## Handle mob squash, incrementing multiplier and increasing score
+## Handle mob squash, incrementing combo and increasing score
 func _on_squash() -> void:
-  multiplier += 1
-  increase_score(multiplier)
-  pass
+  combo += 1
+  increase_score(combo)
