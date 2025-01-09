@@ -1,7 +1,5 @@
 extends Node
 
-@export var mob_scene: PackedScene
-
 # Node path reference convenience vars
 @onready var player: Player = $Player
 
@@ -18,6 +16,10 @@ extends Node
 @onready var spawn_timer: Timer = $SpawnTimer
 @onready var score_timer: Timer = $ScoreTimer
 
+
+@export var mob_scene: PackedScene
+@export var projectile_scene: PackedScene
+
 var score: int = 0
 var combo: int = 0
 
@@ -28,7 +30,7 @@ var demo: bool = true
 func _ready() -> void:
   player.set_position(jail.global_position)
 
-  # Randomize starting player_spawn location
+  # Randomize starting mob spawn location
   mob_spawn.progress_ratio = randf()
 
   spawn_timer.start()
@@ -41,18 +43,22 @@ func _process(_delta) -> void:
   var debug_text: String = ''
   debug_text += 'Mobs: %s\n' % mob_count
   debug_text += 'Pos: %s\n' % player.position
+  debug_text += 'Facing: %s' % (Vector3.FORWARD.rotated(Vector3.UP, player.rotation.y))
   debug_text += 'Spawn: %s\n' % mob_spawn.global_position
 
   debug_label.set_text(debug_text)
   score_label.set_text('Score: %s' % str(score))
 
-  # Append multipler text to score label
+  # Append combo text to score label
   if (combo > 1):
     score_label.text += ' (x%s)' % combo
 
   # Reset combo if player falls to the ground
   if player.global_position.y < 0.6:
     combo = 0
+
+  if Input.is_action_just_pressed('shoot'):
+    shoot()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -61,9 +67,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
   if event.is_action_pressed('debug_clear'):
     get_tree().call_group('mobs', 'queue_free')
+    get_tree().call_group('projectiles', 'queue_free')
 
 
-## Prepare and player_spawn a mob on SpawnTimer tick.
+## Prepare and spawn a mob on SpawnTimer tick.
 func _on_spawn_timer_timeout() -> void:
   mob_spawn.progress_ratio = randf()
 
@@ -78,7 +85,7 @@ func _on_spawn_timer_timeout() -> void:
   add_child(mob)
 
 
-## Show retry screen and stop player_spawn timer on Player hit.
+## Show game over/retry screen.
 func _on_player_hit() -> void:
   game_over()
 
@@ -128,20 +135,30 @@ func game_over() -> void:
   demo = true
   get_tree().call_group('mobs', 'set_collision_mask_value', 2, true)
 
+  # Remove any remaining projectiles so a mob can't be squashed after game-over
+  get_tree().call_group('projectiles', 'queue_free')
+
   ui.show_retry()
 
 
-## Increment the score by 1 * the given combo.
-func increase_score(multiplier: int = 1) -> void:
-  score += 1 * multiplier
+## Shoot a projectile.
+func shoot() -> void:
+  var projectile: Projectile = projectile_scene.instantiate()
+  projectile.initialize(player.position, player.rotation)
+  add_child(projectile)
 
 
-## Increment score by 1 on ScoreTimer tick
+## Increment the score by the given multiplier.
+func increase_score(multiplier: int) -> void:
+  score += multiplier
+
+
+## Increment score by 1 on ScoreTimer tick.
 func _on_score_timer_timeout() -> void:
-  increase_score()
+  increase_score(1)
 
 
-## Handle mob squash, incrementing combo and increasing score
+## Handle mob squash, incrementing combo and increasing score.
 func _on_squash() -> void:
   combo += 1
   increase_score(combo)

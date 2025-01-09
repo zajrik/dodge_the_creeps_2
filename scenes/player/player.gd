@@ -1,5 +1,10 @@
 class_name Player extends CharacterBody3D
 
+# Node path reference convenience vars
+@onready var animation: AnimationPlayer = $AnimationPlayer
+@onready var character: Node3D = $Character
+
+
 ## Emitted when the player gets hit.
 signal hit
 
@@ -15,19 +20,20 @@ signal hit
 ## Upward impulse to be added on bounce in meters/sec.
 @export var bounce_impulse: int = 16
 
-# Node path reference convenience vars
-@onready var animation: AnimationPlayer = $AnimationPlayer
-@onready var character: Node3D = $Character
+const move_actions: Array[StringName] = [
+  &'move_left',
+  &'move_right',
+  &'move_forward',
+  &'move_back'
+]
 
 var target_velocity := Vector3.ZERO
 
 
 func _physics_process(delta: float) -> void:
-  var direction := Vector3.ZERO
-
   # Get input direction
-  var input: Vector2 = Input.get_vector('move_left', 'move_right', 'move_forward', 'move_back')
-  direction += Vector3(input.x, 0, input.y)
+  var input: Vector2 = Input.get_vector.bindv(move_actions).call()
+  var direction := Vector3(input.x, 0, input.y)
 
   # Normalize direction and LOOK AT IT
   if direction != Vector3.ZERO:

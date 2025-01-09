@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbjtb3s5wwkfh"]
+
+[ext_resource type="PackedScene" uid="uid://d0sgv6im5ar41" path="res://art/mob.glb" id="1_jvfdl"]
+[ext_resource type="Script" path="res://scenes/projectile/projectile.gd" id="1_tefv1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_21uib"]
+
+[node name="Projectile" type="Area3D" groups=["projectiles"]]
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("1_tefv1")
+projectile_speed = 40
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_21uib")
+
+[node name="Model" parent="." instance=ExtResource("1_jvfdl")]
+transform = Transform3D(-0.2, -1.88833e-08, 0, 1.74846e-08, -0.216, 0, 0, 0, 0.3, 0, 0, 0)
+
+[node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="."]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_exited"]

@@ -9,9 +9,6 @@ signal squashed
 ## Maximum movement speed in meters/sec.
 @export var max_speed: int = 18
 
-## Downward acceleration while airborne in meters/sec squared.
-@export var fall_acceleration: int = 75
-
 ## Timestep used for interpolating turn direction
 var timestep: float = 0.0
 
