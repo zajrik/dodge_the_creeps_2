@@ -10,21 +10,21 @@ var velocity := Vector3.ZERO
 
 
 ## Initialize this projectile, setting its position and rotation
-func initialize(position: Vector3, rotation: Vector3):
-  set_position(position)
-  set_rotation(rotation)
-  velocity = Vector3.FORWARD.rotated(Vector3.UP, rotation.y)
+func initialize(pos: Vector3, rot: Vector3) -> void:
+    set_position(pos)
+    set_rotation(rot)
+    velocity = Vector3.FORWARD.rotated(Vector3.UP, rot.y)
 
 
 func _physics_process(delta: float) -> void:
-  position += velocity * projectile_speed * delta
+    position += velocity * projectile_speed * delta
 
 
 func _on_body_entered(body: Node3D) -> void:
-  if body is Mob:
-    body.squash()
-    queue_free()
+    if body is Mob:
+        body.squash()
+        queue_free()
 
 
 func _on_visible_on_screen_notifier_3d_screen_exited() -> void:
-  queue_free()
+    queue_free()
