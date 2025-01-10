@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://cshp88csqtplv"]
+[gd_scene load_steps=19 format=3 uid="uid://cshp88csqtplv"]
 
 [ext_resource type="PackedScene" uid="uid://clf104ugdt8k2" path="res://scenes/player/player.tscn" id="1_2c4kc"]
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_bdjtt"]
 [ext_resource type="PackedScene" uid="uid://cl0r4j1d3e3qe" path="res://scenes/mob/mob.tscn" id="2_r24qb"]
 [ext_resource type="PackedScene" uid="uid://bbjtb3s5wwkfh" path="res://scenes/projectile/projectile.tscn" id="3_yx2eb"]
+[ext_resource type="PackedScene" uid="uid://dodc3qmofnji7" path="res://scenes/projectile/spherical_explosion.tscn" id="4_lggxh"]
 [ext_resource type="FontFile" uid="uid://bj5ccxxg7dut5" path="res://fonts/Montserrat-Medium.ttf" id="4_xxs5k"]
 [ext_resource type="Script" path="res://scripts/ui.gd" id="5_wfkf8"]
 
@@ -48,6 +49,8 @@ default_font_size = 22
 script = ExtResource("1_bdjtt")
 mob_scene = ExtResource("2_r24qb")
 projectile_scene = ExtResource("3_yx2eb")
+explosion_scene = ExtResource("4_lggxh")
+demo_spawn_interval = 0.05
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 25, 0)

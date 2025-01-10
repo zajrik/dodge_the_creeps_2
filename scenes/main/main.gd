@@ -19,6 +19,10 @@ extends Node
 
 @export var mob_scene: PackedScene
 @export var projectile_scene: PackedScene
+@export var explosion_scene: PackedScene
+
+@export var spawn_interval: float = 0.5
+@export var demo_spawn_interval: float = 0.2
 
 var score: int = 0
 var combo: int = 0
@@ -33,6 +37,7 @@ func _ready() -> void:
     # Randomize starting mob spawn location
     mob_spawn.progress_ratio = randf()
 
+    spawn_timer.set_wait_time(demo_spawn_interval)
     spawn_timer.start()
     ui.show_message('Squash the Creeps!')
 
@@ -43,7 +48,7 @@ func _process(_delta) -> void:
     var debug_text: String = ''
     debug_text += 'Mobs: %s\n' % mob_count
     debug_text += 'Pos: %s\n' % player.position
-    debug_text += 'Facing: %s' % (Vector3.FORWARD.rotated(Vector3.UP, player.rotation.y))
+    debug_text += 'Facing: %s\n' % (Vector3.FORWARD.rotated(Vector3.UP, player.rotation.y))
     debug_text += 'Spawn: %s\n' % mob_spawn.global_position
 
     debug_label.set_text(debug_text)
@@ -59,6 +64,9 @@ func _process(_delta) -> void:
 
     if Input.is_action_just_pressed('shoot'):
         shoot()
+
+    if Input.is_action_just_pressed(&'explode'):
+        explode()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -110,6 +118,7 @@ func new_game() -> void:
     start_timer.start()
     await start_timer.timeout
 
+    spawn_timer.set_wait_time(spawn_interval)
     spawn_timer.start()
     score_timer.start()
 
@@ -138,6 +147,8 @@ func game_over() -> void:
     # Remove any remaining projectiles so a mob can't be squashed after game-over
     get_tree().call_group('projectiles', 'queue_free')
 
+    spawn_timer.set_wait_time(demo_spawn_interval)
+
     ui.show_retry()
 
 
@@ -146,6 +157,14 @@ func shoot() -> void:
     var projectile: Projectile = projectile_scene.instantiate()
     projectile.initialize(player.position, player.rotation)
     add_child(projectile)
+
+
+## EXPLOSION
+func explode() -> void:
+    var explosion: SphericalExplosion = explosion_scene.instantiate()
+    explosion.set_position(Vector3(player.global_position.x, 0, player.global_position.z))
+    add_child(explosion)
+    explosion.explode()
 
 
 ## Increment the score by the given multiplier.
