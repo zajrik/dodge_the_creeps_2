@@ -1,13 +1,15 @@
 class_name Player extends CharacterBody3D
 
-# Node path reference convenience vars
+#region NodePath references
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var character: Node3D = $Character
+#endregion
 
 
 ## Emitted when the player gets hit.
 signal hit
 
+#region Exported properties
 ## How fast the player character moves in meters/sec.
 @export var speed: int = 14
 
@@ -19,6 +21,7 @@ signal hit
 
 ## Upward impulse to be added on bounce in meters/sec.
 @export var bounce_impulse: int = 16
+#endregion
 
 const move_actions: Array[StringName] = [
     &'move_left',
@@ -54,7 +57,7 @@ func _physics_process(delta: float) -> void:
         target_velocity.y -= fall_acceleration * delta
 
     # Add jump impulse to target velocity if jump is pressed
-    if is_on_floor() and Input.is_action_just_pressed('jump'):
+    if is_on_floor() and Input.is_action_just_pressed(&'jump'):
         target_velocity.y = jump_impulse
 
     # Check for mob collision and squash if hit from above

@@ -1,6 +1,6 @@
 extends Node
 
-# Node path reference convenience vars
+#region NodePath references
 @onready var player: Player = $Player
 
 @onready var player_spawn: Marker3D = $Arena/PlayerSpawnMarker
@@ -15,14 +15,19 @@ extends Node
 @onready var start_timer: Timer = $StartTimer
 @onready var spawn_timer: Timer = $SpawnTimer
 @onready var score_timer: Timer = $ScoreTimer
+@onready var shoot_cooldown: Timer = $ShootCooldown
+@onready var explode_cooldown: Timer = $ExplodeCooldown
+#endregion
 
 
+#region Exported properties
 @export var mob_scene: PackedScene
 @export var projectile_scene: PackedScene
 @export var explosion_scene: PackedScene
 
 @export var spawn_interval: float = 0.5
 @export var demo_spawn_interval: float = 0.2
+#endregion
 
 var score: int = 0
 var combo: int = 0
@@ -43,7 +48,7 @@ func _ready() -> void:
 
 
 func _process(_delta) -> void:
-    var mob_count: int = get_tree().get_nodes_in_group('mobs').size()
+    var mob_count: int = get_tree().get_nodes_in_group(&'mobs').size()
 
     var debug_text: String = ''
     debug_text += 'Mobs: %s\n' % mob_count
@@ -62,20 +67,20 @@ func _process(_delta) -> void:
     if player.global_position.y < 0.6:
         combo = 0
 
-    if Input.is_action_just_pressed('shoot'):
+    if Input.is_action_pressed(&'shoot') and shoot_cooldown.is_stopped():
         shoot()
 
-    if Input.is_action_just_pressed(&'explode'):
+    if Input.is_action_just_pressed(&'explode') and explode_cooldown.is_stopped():
         explode()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-    if event.is_action_pressed('ui_accept') and demo:
+    if event.is_action_pressed(&'ui_accept') and demo:
         new_game()
 
-    if event.is_action_pressed('debug_clear'):
-        get_tree().call_group('mobs', 'queue_free')
-        get_tree().call_group('projectiles', 'queue_free')
+    if event.is_action_pressed(&'debug_clear'):
+        get_tree().call_group(&'mobs', &'queue_free')
+        get_tree().call_group(&'projectiles', &'queue_free')
 
 
 ## Prepare and spawn a mob on SpawnTimer tick.
@@ -103,7 +108,7 @@ func new_game() -> void:
     score = 0
     demo = false
     spawn_timer.stop()
-    get_tree().call_group('mobs', 'queue_free')
+    get_tree().call_group(&'mobs', &'queue_free')
     ui.hide_retry()
 
     # Move player to player_spawn and unhide
@@ -111,7 +116,12 @@ func new_game() -> void:
     player.set_position(player_spawn.global_position)
 
     # Disable inter-mob collision during gameplay
-    get_tree().call_group('mobs', 'set_collision_mask_value', 2, false)
+    get_tree().call_group(
+        &'mobs',
+        &'set_collision_mask_value',
+        LayerNames.PHYSICS_3D.MOBS,
+        false
+    )
 
     ui.show_message('Get ready!', 64, 2)
 
@@ -142,10 +152,15 @@ func game_over() -> void:
 
     # Allow mobs to collide with eachother during game-over screen
     demo = true
-    get_tree().call_group('mobs', 'set_collision_mask_value', 2, true)
+    get_tree().call_group(
+        &'mobs',
+        &'set_collision_mask_value',
+        LayerNames.PHYSICS_3D.MOBS,
+        true
+    )
 
     # Remove any remaining projectiles so a mob can't be squashed after game-over
-    get_tree().call_group('projectiles', 'queue_free')
+    get_tree().call_group(&'projectiles', &'queue_free')
 
     spawn_timer.set_wait_time(demo_spawn_interval)
 
@@ -158,13 +173,19 @@ func shoot() -> void:
     projectile.initialize(player.position, player.rotation)
     add_child(projectile)
 
+    shoot_cooldown.start()
+
 
 ## EXPLOSION
 func explode() -> void:
+    if demo: return
+
     var explosion: SphericalExplosion = explosion_scene.instantiate()
     explosion.set_position(Vector3(player.global_position.x, 0, player.global_position.z))
     add_child(explosion)
     explosion.explode()
+
+    explode_cooldown.start()
 
 
 ## Increment the score by the given multiplier.

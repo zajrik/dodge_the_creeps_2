@@ -3,56 +3,17 @@
 [ext_resource type="Script" path="res://scenes/projectile/spherical_explosion.gd" id="1_quun8"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ojv4c"]
+resource_local_to_scene = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_gfixq"]
-height = 8.0
+resource_local_to_scene = true
+height = 0.5
 is_hemisphere = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lrcg8"]
+resource_local_to_scene = true
 transparency = 1
 albedo_color = Color(0.945098, 0.266667, 0.172549, 0.788235)
-
-[sub_resource type="Animation" id="Animation_kp2el"]
-resource_name = "expand"
-length = 3.0
-loop_mode = 1
-step = 0.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CollisionShape3D:shape:radius")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(0.15, 1),
-"update": 0,
-"values": [0.5, 8.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape3D/MeshInstance3D:mesh:radius")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(0.15, 1),
-"update": 0,
-"values": [0.5, 8.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CollisionShape3D/MeshInstance3D:mesh:height")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 3),
-"transitions": PackedFloat32Array(0.15, 1),
-"update": 0,
-"values": [0.5, 8.0]
-}
 
 [sub_resource type="Animation" id="Animation_g78kx"]
 length = 0.001
@@ -90,7 +51,97 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [8.0]
+"values": [0.5]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CollisionShape3D:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CollisionShape3D/MeshInstance3D:surface_material_override/0:albedo_color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.945098, 0.266667, 0.172549, 0.788235)]
+}
+
+[sub_resource type="Animation" id="Animation_kp2el"]
+resource_name = "expand"
+length = 3.5
+loop_mode = 2
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape3D:shape:radius")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(0.15, 1),
+"update": 0,
+"values": [0.5, 8.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape3D/MeshInstance3D:mesh:radius")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(0.15, 1),
+"update": 0,
+"values": [0.5, 8.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CollisionShape3D/MeshInstance3D:mesh:height")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(0.15, 1),
+"update": 0,
+"values": [0.5, 8.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("CollisionShape3D:disabled")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("CollisionShape3D/MeshInstance3D:surface_material_override/0:albedo_color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = false
+tracks/4/keys = {
+"times": PackedFloat32Array(3, 3.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0.945098, 0.266667, 0.172549, 0.788235), Color(0.945098, 0.266667, 0.172549, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_0id0f"]
@@ -99,7 +150,7 @@ _data = {
 "expand": SubResource("Animation_kp2el")
 }
 
-[node name="SphericalExplosion" type="Area3D"]
+[node name="SphericalExplosion" type="Area3D" groups=["projectiles"]]
 collision_layer = 8
 collision_mask = 2
 script = ExtResource("1_quun8")
@@ -116,5 +167,4 @@ libraries = {
 "": SubResource("AnimationLibrary_0id0f")
 }
 
-[connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

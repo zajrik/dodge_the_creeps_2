@@ -12,6 +12,7 @@ script = ExtResource("1_tefv1")
 projectile_speed = 40
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+unique_name_in_owner = true
 shape = SubResource("BoxShape3D_21uib")
 
 [node name="Model" parent="." instance=ExtResource("1_jvfdl")]

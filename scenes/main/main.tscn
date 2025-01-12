@@ -270,6 +270,14 @@ one_shot = true
 
 [node name="ScoreTimer" type="Timer" parent="."]
 
+[node name="ShootCooldown" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="ExplodeCooldown" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
+
 [connection signal="hit" from="Player" to="." method="_on_player_hit"]
 [connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]
 [connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]

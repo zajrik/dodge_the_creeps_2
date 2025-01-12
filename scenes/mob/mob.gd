@@ -3,11 +3,13 @@ class_name Mob extends CharacterBody3D
 ## Emitted when the mob has been squashed by the player.
 signal squashed
 
+#region Exported properties
 ## Minimum movement speed in meters/sec.
 @export var min_speed: int = 10
 
 ## Maximum movement speed in meters/sec.
 @export var max_speed: int = 18
+#endregion
 
 ## Timestep used for interpolating turn direction
 var timestep: float = 0.0
