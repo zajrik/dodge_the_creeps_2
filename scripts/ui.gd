@@ -17,7 +17,6 @@ func _ready() -> void:
     message_label.set(&'theme_override_colors/font_color', BLACK)
     message_label.set(&'theme_override_colors/font_outline_color', WHITE)
 
-
 ## Show the retry screen.
 func show_retry() -> void:
     score_label.set(&'theme_override_colors/font_color', WHITE)
@@ -27,7 +26,6 @@ func show_retry() -> void:
 
     retry_overlay.show()
     show_message('Press ENTER to retry', 32)
-
 
 ## Hide the retry screen.
 func hide_retry() -> void:
@@ -39,7 +37,6 @@ func hide_retry() -> void:
     retry_overlay.hide()
     message_label.hide()
     message_label.set_text('')
-
 
 ## Show the given message for a specified duration.
 ##

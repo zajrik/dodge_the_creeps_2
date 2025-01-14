@@ -19,7 +19,6 @@ extends Node
 @onready var explode_cooldown: Timer = $ExplodeCooldown
 #endregion
 
-
 #region Exported properties
 @export var mob_scene: PackedScene
 @export var projectile_scene: PackedScene
@@ -35,7 +34,6 @@ var combo: int = 0
 # Start in demo mode, allowing mobs to collide for my amusement
 var demo: bool = true
 
-
 func _ready() -> void:
     player.set_position(jail.global_position)
 
@@ -45,7 +43,6 @@ func _ready() -> void:
     spawn_timer.set_wait_time(demo_spawn_interval)
     spawn_timer.start()
     ui.show_message('Squash the Creeps!')
-
 
 func _process(_delta) -> void:
     var mob_count: int = get_tree().get_nodes_in_group(&'mobs').size()
@@ -73,7 +70,6 @@ func _process(_delta) -> void:
     if Input.is_action_just_pressed(&'explode') and explode_cooldown.is_stopped():
         explode()
 
-
 func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed(&'ui_accept') and demo:
         new_game()
@@ -81,7 +77,6 @@ func _unhandled_input(event: InputEvent) -> void:
     if event.is_action_pressed(&'debug_clear'):
         get_tree().call_group(&'mobs', &'queue_free')
         get_tree().call_group(&'projectiles', &'queue_free')
-
 
 ## Prepare and spawn a mob on SpawnTimer tick.
 func _on_spawn_timer_timeout() -> void:
@@ -93,15 +88,13 @@ func _on_spawn_timer_timeout() -> void:
 
     # Enable inter-mob collision in demo mode
     if demo:
-        mob.set_collision_mask_value(2, true)
+        mob.set_collision_mask_value(LayerNames.PHYSICS_3D.MOBS, true)
 
     add_child(mob)
-
 
 ## Show game over/retry screen.
 func _on_player_hit() -> void:
     game_over()
-
 
 ## Start a new game.
 func new_game() -> void:
@@ -131,7 +124,6 @@ func new_game() -> void:
     spawn_timer.set_wait_time(spawn_interval)
     spawn_timer.start()
     score_timer.start()
-
 
 ## End the current game, displaying the retry screen.
 func game_over() -> void:
@@ -166,7 +158,6 @@ func game_over() -> void:
 
     ui.show_retry()
 
-
 ## Shoot a projectile.
 func shoot() -> void:
     var projectile: Projectile = projectile_scene.instantiate()
@@ -174,7 +165,6 @@ func shoot() -> void:
     add_child(projectile)
 
     shoot_cooldown.start()
-
 
 ## EXPLOSION
 func explode() -> void:
@@ -187,16 +177,13 @@ func explode() -> void:
 
     explode_cooldown.start()
 
-
 ## Increment the score by the given multiplier.
 func increase_score(multiplier: int) -> void:
     score += multiplier
 
-
 ## Increment score by 1 on ScoreTimer tick.
 func _on_score_timer_timeout() -> void:
     increase_score(1)
-
 
 ## Handle mob squash, incrementing combo and increasing score.
 func _on_squash() -> void:

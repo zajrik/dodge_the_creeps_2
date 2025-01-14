@@ -5,7 +5,6 @@ class_name Player extends CharacterBody3D
 @onready var character: Node3D = $Character
 #endregion
 
-
 ## Emitted when the player gets hit.
 signal hit
 
@@ -31,7 +30,6 @@ const move_actions: Array[StringName] = [
 ]
 
 var target_velocity := Vector3.ZERO
-
 
 func _physics_process(delta: float) -> void:
     # Get input direction
@@ -82,7 +80,6 @@ func _physics_process(delta: float) -> void:
 
     # Adjust character angle over jump arc
     character.rotation.x = PI / 6 * velocity.y / jump_impulse
-
 
 func _on_mob_detector_body_entered(_body: Node3D) -> void:
     hit.emit()

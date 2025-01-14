@@ -14,7 +14,6 @@ signal squashed
 ## Timestep used for interpolating turn direction
 var timestep: float = 0.0
 
-
 ## Initialize this mob, setting its position and velocity.
 func initialize(start_pos: Vector3, player_pos: Vector3) -> void:
     var target_pos := Vector3(player_pos)
@@ -36,12 +35,10 @@ func initialize(start_pos: Vector3, player_pos: Vector3) -> void:
     # Set random animation speed scale
     $AnimationPlayer.speed_scale = speed / min_speed
 
-
 ## Squash this mob.
 func squash() -> void:
     squashed.emit()
     queue_free()
-
 
 func _physics_process(_delta: float) -> void:
     # Iterate collisions to handle bouncing when collision is enabled
@@ -62,7 +59,6 @@ func _physics_process(_delta: float) -> void:
     transform.basis = Basis(new_basis)
 
     move_and_slide()
-
 
 func _on_visible_on_screen_notifier_3d_screen_exited() -> void:
     # Free self when no longer visible on screen
